@@ -1,8 +1,8 @@
-package main
+package api
 
 import "os/exec"
 
-func execCMD(cmd string) {
+func execCMD(AppConfig struct, cmd string) {
 	command := []string{
 		"-r",
 		AppConfig.resticRepoPath,

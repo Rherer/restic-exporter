@@ -1,9 +1,6 @@
-package main
+package config
 
-import (
-	"fmt"
-	"os"
-)
+import "os"
 
 type Config struct {
 	resticPW       string `yaml: "restic_pw", envconfig: "RESTIC_PASSWORD"`
@@ -17,11 +14,6 @@ func main() {
 	//AppConfig.resticPW = "1"
 	AppConfig.resticPWFile = "/mnt/data/distrobox/restic-exporter/home/src/pw.txt"
 	AppConfig.resticRepoPath = "../restic"
-
-	validateConfig()
-
-	resticapi.execCMD()
-	fmt.Println(AppConfig)
 }
 
 func validateConfig() {
