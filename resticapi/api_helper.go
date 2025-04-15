@@ -1,5 +1,0 @@
-package resticapi
-
-func execCMD() {
-
-}
