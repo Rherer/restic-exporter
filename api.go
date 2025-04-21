@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"os"
 	"os/exec"
 	"time"
@@ -58,9 +57,9 @@ func getSnapshots() ([]Snapshot, error) {
 
 // Run check, and return the exit code
 func runCheck() (int, error) {
-	result, err := execCMD([]string{"check"})
+	_, err := execCMD([]string{"check"})
 	if err != nil {
-		fmt.Println(result)
+		//fmt.Println(result)
 		return err.(*exec.ExitError).ExitCode(), err
 	}
 

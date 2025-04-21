@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"net/http"
-	"os"
 	"strconv"
 	"time"
 
@@ -12,10 +11,13 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
+// Struct for additional Settings, RESTIC Environment variables get passed to restic directly
 type Settings struct {
 	HTTP_BASE_PATH string        `env:"HTTP_BASE_PATH" envDefault:"/metrics"`
 	HTTP_BASE_PORT int           `env:"HTTP_BASE_PORT" envDefault:"8080"`
 	CHECK_INTERVAL time.Duration `env:"CHECK_INTERVAL" envDefault:"30m"`
+	NO_CHECK       bool          `env:"NO_CHECK" envDefault:"false"`
+	USE_REPO_PATH  bool          `env:"USE_REPO_PATH" envDefault:"false"`
 }
 
 var Config Settings = Settings{}
@@ -23,22 +25,22 @@ var checkResult int = -1
 
 func main() {
 	getSettings()
-	// Testing
-	os.Setenv("RESTIC_REPOSITORY", "/mnt/data/distrobox/restic-exporter/home/restic")
-	os.Setenv("RESTIC_PASSWORD", "1")
 
-	// Run a check at first, we can safely ignore the errors on this function
-	checkResult, _ = runCheck()
-
-	// Register a Ticket for periodic checks
-	registerTicker()
+	// Only run checks, if not disabled via env NO_CHECK
+	if !Config.NO_CHECK {
+		// Run a check at startup, we can safely ignore the errors on this function
+		checkResult, _ = runCheck()
+		// Register a Ticker for periodic checks
+		registerTicker()
+	}
 
 	// Prometheus handles all calls for us (Using the custom Collector)
+	// So the metrics will get refreshed on every http request (Except check, see CHECK_INTERVAL)
 	registerHTTP()
 }
 
 // Only settings for the exporter, other ENV-Variables get passed to restic
-// See struct on top of this file, for all options
+// See struct Settings for more information
 func getSettings() {
 	err := env.Parse(&Config)
 	if err != nil {
@@ -46,11 +48,12 @@ func getSettings() {
 	}
 }
 
+// Registers a Ticker with the configured CHECK_INTERVAL to periodically run checks
 func registerTicker() {
 	ticker := time.NewTicker(Config.CHECK_INTERVAL)
 
 	go func(ticker *time.Ticker, checkResult *int) {
-		for _ = range ticker.C {
+		for range ticker.C {
 			result, err := runCheck()
 			if err != nil {
 				fmt.Println("Check failed with error:", err)
@@ -60,7 +63,7 @@ func registerTicker() {
 	}(ticker, &checkResult)
 }
 
-// Register custom metrics collector and start the http server
+// Register custom metrics collector and start the http server on configured port and path (see: HTTP_BASE_PORT and HTTP_BASE_PATH)
 func registerHTTP() {
 	registry := prometheus.NewPedanticRegistry()
 	collector := newCollector()

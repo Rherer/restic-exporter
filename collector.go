@@ -1,6 +1,7 @@
 package main
 
 import (
+	"os"
 	"strings"
 	"time"
 
@@ -30,7 +31,13 @@ var labels = []string{
 }
 
 // Initialize Metrics
+// New metrics also have to be appended to the Collector struct, the Describe and the Collect functions separately
 func newCollector() *Collector {
+	// Add repo_path to labels, if specified in config
+	if Config.USE_REPO_PATH {
+		labels = append(labels, "repo_path")
+	}
+
 	return &Collector{
 		restic_check_success: prometheus.NewDesc("restic_check_success",
 			"Shows whether a check was sucessfull",
@@ -111,6 +118,10 @@ func (collector *Collector) Collect(ch chan<- prometheus.Metric) {
 			strings.Join(snapshot.Paths, ","),
 		}
 
+		if Config.USE_REPO_PATH {
+			labelValues = append(labelValues, os.Getenv("RESTIC_REPOSITORY"))
+		}
+
 		ch <- prometheus.MustNewConstMetric(collector.restic_backup_timestamp, prometheus.GaugeValue, float64(snapshot.Summary.BackupStart.Unix()), labelValues...)
 		ch <- prometheus.MustNewConstMetric(collector.restic_backup_files_total, prometheus.GaugeValue, float64(snapshot.Summary.TotalFilesProcessed), labelValues...)
 		ch <- prometheus.MustNewConstMetric(collector.restic_backup_files_new, prometheus.GaugeValue, float64(snapshot.Summary.FilesNew), labelValues...)
@@ -119,7 +130,7 @@ func (collector *Collector) Collect(ch chan<- prometheus.Metric) {
 		ch <- prometheus.MustNewConstMetric(collector.restic_backup_runtime, prometheus.GaugeValue, float64(snapshot.Summary.BackupEnd.Unix()-snapshot.Summary.BackupStart.Unix()), labelValues...)
 	}
 
-	// Last check's status (Don't run check on every scrape, that would be too much load)
+	// Last check's status (Don't run check on every scrape, that would be too much load, just get from the variable, that we set in the ticker)
 	ch <- prometheus.MustNewConstMetric(collector.restic_check_success, prometheus.GaugeValue, float64(checkResult))
 
 	// Get locks on the repo, just discard metric, if the call fails
