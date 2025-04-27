@@ -39,6 +39,13 @@ type Snapshot struct {
 	ShortID string `json:"short_id"`
 }
 
+func checkIfRepoExists() {
+	_, err := execCMD([]string{"cat", "config"})
+	if err != nil {
+		panic(err)
+	}
+}
+
 // Get all Snapshots in the repo
 func getSnapshots() ([]Snapshot, error) {
 	rawJson, err := execCMD([]string{"snapshots"})

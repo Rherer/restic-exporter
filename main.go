@@ -26,6 +26,9 @@ var checkResult int = -1
 func main() {
 	getSettings()
 
+	// Immediately panic, if no repo found at location
+	checkIfRepoExists()
+
 	// Only run checks, if not disabled via env NO_CHECK
 	if !Config.NO_CHECK {
 		// Run a check at startup, we can safely ignore the errors on this function
