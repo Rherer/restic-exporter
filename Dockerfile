@@ -1,5 +1,5 @@
 FROM golang:1.24-alpine
-LABEL org.opencontainers.image.source="https://github.com/Rherer/resticexporter"
+LABEL org.opencontainers.image.source="https://github.com/rherer/restic-exporter"
 
 # Set destination for COPY
 WORKDIR /app
