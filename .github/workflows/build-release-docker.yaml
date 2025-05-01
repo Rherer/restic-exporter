@@ -1,4 +1,5 @@
-name: Build & Deploy Images to GHCR
+# Build and push new container, when a new tag gets pushed
+run-name: Build & Deploy Images to GHCR
 
 on:
   push:
@@ -21,5 +22,5 @@ jobs:
 
       - name: 'Build and Release Image'
         run: |
-          docker build . --tag ghcr.io/Rherer/restic-exporter:latest
-          docker push ghcr.io/Rherer/restic-exporter:latest
+          docker build . --tag ghcr.io/Rherer/resticexporter:latest
+          docker push ghcr.io/Rherer/resticexporter:latest

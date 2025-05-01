@@ -1,4 +1,4 @@
-# Build and push new releases, when a new tag get's pushed
+# Build and push new releases, when a new tag gets pushed
 run-name: Build Binaries
 on:
   push:
