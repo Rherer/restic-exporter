@@ -21,5 +21,5 @@ jobs:
 
       - name: 'Build and Release Image'
         run: |
-          docker build . --tag ghcr.io/Rherer/store:latest
-          docker push ghcr.io/Rherer/store:latest
+          docker build . --tag ghcr.io/Rherer/restic-exporter:latest
+          docker push ghcr.io/Rherer/restic-exporter:latest
