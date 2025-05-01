@@ -1,4 +1,5 @@
 # Build and push new releases, when a new tag get's pushed
+run-name: Build Binaries
 on:
   push:
     tags:
@@ -21,10 +22,10 @@ jobs:
         run: go mod download
 
       - name: Build linux-x64 elf
-        run: go build -o ./release/restic-exporter_x64_linux
+        run: GOOS=linux GOARCH=amd64 go build -o ./release/restic-exporter_x64_linux
 
-      - name: Build win-x64 elf
-        run: go build -o ./release/restic-exporter_x64_win.exe
+      - name: Build win-x64 exe
+        run: GOOS=windows GOARCH=amd64 go build -o ./release/restic-exporter_x64_win.exe
 
       - name: Upload release
         uses: svenstaro/upload-release-action@v2
