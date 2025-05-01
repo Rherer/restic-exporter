@@ -4,10 +4,11 @@
 ![Downloads][github-downloads]
 ![Contributors][github-contribs]
 
-> Exports statistics about a Restic Repository as prometheus metrics
-> Metrics are refreshed on each scrape, checks will (optionally) be run in a configured interval
-> This project was inspired by: https://github.com/ngosang/restic-exporter (so props to @ngosang)
-> The metrics are not 1:1 replaceable, but i did my best to keep compatibility high
+> Exports statistics about a Restic Repository as prometheus metrics  
+> Metrics are refreshed on each scrape, checks will (optionally) be run in a configured interval  
+>
+> This project was inspired by: https://github.com/ngosang/restic-exporter (so props to @ngosang)  
+> The metrics are not 1:1 replaceable, but i did my best to keep compatibility high  
 
 > The following metrics are exported:
 >  - Per Snapshot:
@@ -49,19 +50,19 @@ sh install.sh
 Configuration options (Using Environment Variables):
 
 ```sh
-	HTTP_BASE_PATH The path that the metrics will be served on (Default: /metrics)
-	HTTP_BASE_PORT The port on which the server will listen (Default: 8080)
-	CHECK_INTERVAL The interval between checks (Default: 30m)
-	NO_CHECK       Disable periodic checks completely (also disables the corresponding metric) (Default: false)
-	USE_REPO_PATH  Add the path to the repository as an additional tag (Default: false)
+HTTP_BASE_PATH The path that the metrics will be served on (Default: /metrics)
+HTTP_BASE_PORT The port on which the server will listen (Default: 8080)
+CHECK_INTERVAL The interval between checks (Default: 30m)
+NO_CHECK       Disable periodic checks completely (also disables the corresponding metric) (Default: false)
+USE_REPO_PATH  Add the path to the repository as an additional tag (Default: false)
 ```
 
 ### Setup on Linux
 
-First you have to set the configuration for restic with your environment.
-The options will be passed through as is, so you can use any and all options that restic provides as environment variables.
-You can set these variables before calling the binary
-or add them to the systemd-unit <-- This is the recommended way!
+First you have to set the configuration for restic with your environment.  
+The options will be passed through as is, so you can use any and all options that restic provides as environment variables.  
+You can set these variables before calling the binary  
+OR add them to the systemd-unit (when using systemd) <-- This is the recommended way!  
 
 Example for a minimal systemd unit-file:
 ```sh
@@ -80,7 +81,7 @@ ExecStart=/usr/bin/restic-exporter
 WantedBy=default.target
 ```
 
-You can then access the metrics in your browser like:
+You can then access the metrics in your browser at ex.:
 
 http://localhost:8080/metrics
 ```
@@ -122,7 +123,7 @@ restic_scrape_duration_seconds 1.043720226
 restic_snapshots_total 2
 ```
 
-You can then scrape the metrics using prometheus, and display them using grafana.
+You can now scrape the metrics using prometheus.
 
 ### Setup on Windows
 
@@ -132,7 +133,7 @@ Then create a service from the binary
 > You can use nssm for running a binary as a service under windows
 > See the docs under: https://nssm.cc/
 
-You can then scrape the metrics using prometheus, and display them using grafana.
+You can now scrape the metrics using prometheus.
 
 ## Development setup
 
