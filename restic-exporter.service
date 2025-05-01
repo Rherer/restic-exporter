@@ -4,8 +4,8 @@ After=network.target
 
 [Service]
 User=<USERNAME>
-ENVIRONMENT=RESTIC_REPOSITORY=/mnt/data/distrobox/restic
-ENVIRONMENT=RESTIC_PASSWORD=1
+ENVIRONMENT=RESTIC_REPOSITORY=<PATH_TO_REPO>
+ENVIRONMENT=RESTIC_PASSWORD_FILE=<PATH_TO_PW_FILE>
 Restart=on_fail
 ExecStart=/usr/bin/restic-exporter
 
