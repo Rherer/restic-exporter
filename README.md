@@ -7,52 +7,24 @@
 > Exports statistics about a Restic Repository as prometheus metrics  
 > Metrics are refreshed on each scrape, checks will (optionally) be run in a configured interval  
 
-> Supported:
+This project was inspired by: https://github.com/ngosang/restic-exporter (so props to @ngosang)  
+The metrics are not 1:1 replaceable, but i did my best to keep compatibility high.  
+
+## Installation
+
+ There are multiple ways to install and this program:
 > - Binary
 > - Systemd Unit
 > - Container
 
-> This project was inspired by: https://github.com/ngosang/restic-exporter (so props to @ngosang)  
-> The metrics are not 1:1 replaceable, but i did my best to keep compatibility high  
+You can either download a prebuilt binary from the releases tab (provided for Windows and Linux), or build your own using the following steps.  
+> For Linux an optional, automated setup script is provided, which:
+> - builds (or downloads, if go is not installed) the binary
+> - optionally installs a systemd-service
 
-> The following metrics are exported:
->  - Per Snapshot:
->    - Start time
->    - Duration
->    - No. of files
->    - No. of new files
->    - No. of modified files
->    - Size in bytes
->  - Globally:
->    - No. of locks
->    - Status of last check (Configurable interval)
->    - Total No. of snapshots
+Alternatively you can just run the provided docker container
 
-## Installation
-
-You can download a prebuilt binary from the releases tab, or build your own using the following steps.
-For Linux an automated setup script is provided, which:
-- builds (or downloads, if go is not installed) the binary
-- optionally installs a systemd-service
-
-Alternatively you can just run the provided docker container.
-
-Linux, Windows & Mac OSX:
-
-```sh
-git clone https://github.com/Rherer/restic-exporter .
-go mod download
-go install
-```
-
-Linux only:
-
-```sh
-git clone https://github.com/Rherer/restic-exporter .
-sh install.sh
-```
-
-Docker:
+### Docker:
 
 ```sh
 docker run -d \ 
@@ -61,7 +33,22 @@ docker run -d \
 --mount type=bind,src=/foo/bar/,dst=/etc/restic-repo \
 --mount type=bind,src=/baz/qux,dst=/etc/restic-pw \
 -p 80:8080 \
---name restic-exporter ghcr.io/Rherer/estic-exporter:latest
+--name restic-exporter ghcr.io/rherer/restic-exporter:latest
+```
+
+### Linux, Windows & Mac OSX:
+
+```sh
+git clone https://github.com/Rherer/restic-exporter .
+go mod download
+go install
+```
+
+### Linux only:
+
+```sh
+git clone https://github.com/Rherer/restic-exporter .
+sh install.sh
 ```
 
 ## Usage example
@@ -76,12 +63,27 @@ NO_CHECK       Disable periodic checks completely (also disables the correspondi
 USE_REPO_PATH  Add the path to the repository as an additional tag (Default: false)
 ```
 
-### Setup on Linux
+All other options will be passed through as is, so you can natively use any options that restic provides as environment variables. 
 
-First you have to set the configuration for restic with your environment.  
-The options will be passed through as is, so you can use any and all options that restic provides as environment variables.  
-You can set these variables before calling the binary  
-OR add them to the systemd-unit (when using systemd) <-- This is the recommended way!  
+The following stats are currently supported:
+```sh 
+- Per Snapshot:
+  - Start time
+  - Duration
+  - No. of files
+  - No. of new files
+  - No. of modified files
+  - Size in bytes
+- Globally:
+  - No. of locks
+  - Status of last check (Configurable interval)
+  - Total No. of snapshots
+``` 
+
+## Setup on Linux
+
+> I recommend running the exporter as a systemd-unit or a docker container.  
+> You can find a minimal configuration for either method below.
 
 Example for a minimal systemd unit-file:
 ```sh
@@ -100,9 +102,7 @@ ExecStart=/usr/bin/restic-exporter
 WantedBy=default.target
 ```
 
-You can then access the metrics in your browser at ex.:
-
-http://localhost:8080/metrics
+You can then access the metrics in your browser at ex.: http://localhost:8080/metrics
 ```
 # HELP restic_backup_files_changed Shows the amount of changed files in the snapshot
 # TYPE restic_backup_files_changed gauge
@@ -142,19 +142,17 @@ restic_scrape_duration_seconds 1.043720226
 restic_snapshots_total 2
 ```
 
-You can now scrape the metrics using prometheus.
+You can now scrape the metrics endpoint using prometheus.
 
-### Setup on Windows
+## Setup on Windows
 
-Add your needed environment variables in your settings.
+> As running as a service under windows is not natively supported, either use 
+> - docker 
+> - or [nssm](https://nssm.cc/)
 
-Then create a service from the binary
-> You can use nssm for running a binary as a service under windows
-> See the docs under: https://nssm.cc/
+## Local Development setup
 
-You can now scrape the metrics using prometheus.
-
-## Development setup
+If building yourself, you can just use the same procedure as described above.:
 
 ```sh
 go mod download

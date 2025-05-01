@@ -1,4 +1,5 @@
 # Build and push new container, when a new tag gets pushed
+name: Container Build
 run-name: Build & Deploy Images to GHCR
 
 on:
