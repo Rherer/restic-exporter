@@ -145,8 +145,6 @@ go build
 
 Distributed under the GPL 3.0 license. See ``LICENSE`` for more information.
 
-[https://github.com/yourname/github-link](https://github.com/dbader/)
-
 ## Contributing
 
 1. Fork it (<https://github.com/Rherer/restic-exporter/fork>)
