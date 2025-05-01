@@ -6,7 +6,12 @@
 
 > Exports statistics about a Restic Repository as prometheus metrics  
 > Metrics are refreshed on each scrape, checks will (optionally) be run in a configured interval  
->
+
+> Supported:
+> - Binary
+> - Systemd Unit
+> - Container
+
 > This project was inspired by: https://github.com/ngosang/restic-exporter (so props to @ngosang)  
 > The metrics are not 1:1 replaceable, but i did my best to keep compatibility high  
 
@@ -30,6 +35,8 @@ For Linux an automated setup script is provided, which:
 - builds (or downloads, if go is not installed) the binary
 - optionally installs a systemd-service
 
+Alternatively you can just run the provided docker container.
+
 Linux, Windows & Mac OSX:
 
 ```sh
@@ -43,6 +50,18 @@ Linux only:
 ```sh
 git clone https://github.com/Rherer/restic-exporter .
 sh install.sh
+```
+
+Docker:
+
+```sh
+docker run -d \ 
+-e RESTIC_REPOSITORY='/etc/restic-repo' \
+-e RESTIC_PASSWORD_FILE='/etc/restic-pw' \
+--mount type=bind,src=/foo/bar/,dst=/etc/restic-repo \
+--mount type=bind,src=/baz/qux,dst=/etc/restic-pw \
+-p 80:8080 \
+--name restic-exporter ghcr.io/Rherer/estic-exporter:latest
 ```
 
 ## Usage example
