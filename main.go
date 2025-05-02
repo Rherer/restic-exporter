@@ -31,8 +31,6 @@ func main() {
 
 	// Only run checks, if not disabled via env NO_CHECK
 	if !Config.NO_CHECK {
-		// Run a check at startup, we can safely ignore the errors on this function
-		checkResult, _ = runCheck()
 		// Register a Ticker for periodic checks
 		registerTicker()
 	}
@@ -56,7 +54,8 @@ func registerTicker() {
 	ticker := time.NewTicker(Config.CHECK_INTERVAL)
 
 	go func(ticker *time.Ticker, checkResult *int) {
-		for range ticker.C {
+		// Small workaround, so the ticket triggers once at the beginning, see: https://github.com/golang/go/issues/17601
+		for ; true; <-ticker.C {
 			result, err := runCheck()
 			if err != nil {
 				fmt.Println("Check failed with error:", err)
