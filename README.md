@@ -12,7 +12,7 @@ The metrics are not 1:1 replaceable, but i did my best to keep compatibility hig
 
 ## Installation
 
- There are multiple ways to install and this program:
+ There are multiple ways to install and run this program:
 > - Binary
 > - Systemd Unit
 > - Container
