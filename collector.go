@@ -40,7 +40,7 @@ func newCollector() *Collector {
 
 	return &Collector{
 		restic_check_success: prometheus.NewDesc("restic_check_success",
-			"Shows whether a check was sucessfull",
+			"Shows whether a check was sucessful",
 			nil, nil,
 		),
 		restic_locks_total: prometheus.NewDesc("restic_locks_total",
@@ -107,6 +107,11 @@ func (collector *Collector) Collect(ch chan<- prometheus.Metric) {
 		ch <- prometheus.NewInvalidMetric(prometheus.NewInvalidDesc(err), err)
 	}
 
+	snapshot_count, err := getSnapshotCount()
+	if err != nil {
+		ch <- prometheus.NewInvalidMetric(prometheus.NewInvalidDesc(err), err)
+	}
+
 	// Per snapshot metrics
 	for _, snapshot := range snapshots {
 		labelValues := []string{
@@ -139,7 +144,7 @@ func (collector *Collector) Collect(ch chan<- prometheus.Metric) {
 	}
 
 	// Get total amount of snapshots in the repo
-	ch <- prometheus.MustNewConstMetric(collector.restic_snapshots_total, prometheus.GaugeValue, float64(len(snapshots)))
+	ch <- prometheus.MustNewConstMetric(collector.restic_snapshots_total, prometheus.GaugeValue, float64(snapshot_count))
 
 	// Get how long our metric retrieval took
 	duration := time.Since(startTime)

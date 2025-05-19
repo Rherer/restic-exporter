@@ -18,6 +18,7 @@ type Settings struct {
 	CHECK_INTERVAL time.Duration `env:"CHECK_INTERVAL" envDefault:"30m"`
 	NO_CHECK       bool          `env:"NO_CHECK" envDefault:"false"`
 	USE_REPO_PATH  bool          `env:"USE_REPO_PATH" envDefault:"false"`
+	USE_LATEST_N   int           `env:"USE_LATEST_N" envDefault:"1"`
 }
 
 var Config Settings = Settings{}

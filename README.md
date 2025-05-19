@@ -1,5 +1,6 @@
 # Restic Prometheus Exporter
 ![Go Version][go-vers]
+![Go Ranking][go-rank]
 ![Build Status][build-stat]
 ![Downloads][github-downloads]
 ![Contributors][github-contribs]
@@ -18,7 +19,7 @@ The metrics are not 1:1 replaceable, but i did my best to keep compatibility hig
 > - Container
 
 You can either download a prebuilt binary from the releases tab (provided for Windows and Linux), or build your own using the following steps.  
-> For Linux an optional, automated setup script is provided, which:
+> For Linux a optional, automated setup script is provided, which:
 > - builds (or downloads, if go is not installed) the binary
 > - optionally installs a systemd-service
 
@@ -61,6 +62,7 @@ HTTP_BASE_PORT The port on which the server will listen (Default: 8080)
 CHECK_INTERVAL The interval between checks (Default: 30m)
 NO_CHECK       Disable periodic checks completely (also disables the corresponding metric) (Default: false)
 USE_REPO_PATH  Add the path to the repository as an additional tag (Default: false)
+USE_LATEST_N   Collect the latest n snapshots (grouped by host and path) the repo (Default: 1)
 ```
 
 All other options will be passed through as is, so you can natively use any options that restic provides as environment variables. 
@@ -173,6 +175,7 @@ Distributed under the GPL 3.0 license. See ``LICENSE`` for more information.
 
 <!-- Markdown link & img dfn's -->
 [go-vers]: https://img.shields.io/github/go-mod/go-version/Rherer/restic-exporter
+[go-rank]: https://goreportcard.com/badge/github.com/Rherer/restic-exporter
 [build-stat]: https://img.shields.io/github/actions/workflow/status/Rherer/restic-exporter/build-release-binaries.yaml
 [github-downloads]: https://img.shields.io/github/downloads/Rherer/restic-exporter/total
 [github-contribs]: https://img.shields.io/github/contributors/Rherer/restic-exporter

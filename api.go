@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"os"
 	"os/exec"
+	"strconv"
 	"time"
 )
 
@@ -46,9 +47,9 @@ func checkIfRepoExists() {
 	}
 }
 
-// Get all Snapshots in the repo
+// Get Snapshots in the repo
 func getSnapshots() ([]Snapshot, error) {
-	rawJson, err := execCMD([]string{"snapshots"})
+	rawJson, err := execCMD([]string{"snapshots", "--latest", strconv.Itoa(Config.USE_LATEST_N)})
 	if err != nil {
 		return nil, err
 	}
@@ -60,6 +61,22 @@ func getSnapshots() ([]Snapshot, error) {
 	}
 
 	return snapshots, err
+}
+
+// More stats can probably be gotten from this
+func getSnapshotCount() (int, error) {
+	rawJson, err := execCMD([]string{"snapshots"})
+	if err != nil {
+		return 0, err
+	}
+
+	var snapshots []Snapshot
+	err = json.Unmarshal(rawJson, &snapshots)
+	if err != nil {
+		return len(snapshots), err
+	}
+
+	return len(snapshots), err
 }
 
 // Run check, and return the exit code
