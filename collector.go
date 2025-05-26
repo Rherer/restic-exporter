@@ -40,7 +40,7 @@ func newCollector() *Collector {
 
 	return &Collector{
 		restic_check_success: prometheus.NewDesc("restic_check_success",
-			"Shows whether a check was sucessful",
+			"Shows whether a check was successful",
 			nil, nil,
 		),
 		restic_locks_total: prometheus.NewDesc("restic_locks_total",
@@ -49,7 +49,7 @@ func newCollector() *Collector {
 		),
 		restic_snapshots_total: prometheus.NewDesc("restic_snapshots_total",
 			"Shows the total amount of snapshots in the repository",
-			nil, nil,
+			labels, nil,
 		),
 		restic_scrape_duration_seconds: prometheus.NewDesc("restic_scrape_duration_seconds",
 			"Shows the duration of the scrape",
@@ -107,7 +107,12 @@ func (collector *Collector) Collect(ch chan<- prometheus.Metric) {
 		ch <- prometheus.NewInvalidMetric(prometheus.NewInvalidDesc(err), err)
 	}
 
-	snapshot_count, err := getSnapshotCount()
+	allSnapshots, err := getAllSnapshots()
+	if err != nil {
+		ch <- prometheus.NewInvalidMetric(prometheus.NewInvalidDesc(err), err)
+	}
+
+	snapCount, err := countSnapshots(allSnapshots)
 	if err != nil {
 		ch <- prometheus.NewInvalidMetric(prometheus.NewInvalidDesc(err), err)
 	}
@@ -135,6 +140,24 @@ func (collector *Collector) Collect(ch chan<- prometheus.Metric) {
 		ch <- prometheus.MustNewConstMetric(collector.restic_backup_runtime, prometheus.GaugeValue, float64(snapshot.Summary.BackupEnd.Unix()-snapshot.Summary.BackupStart.Unix()), labelValues...)
 	}
 
+	// Get total amount of snapshots in the repo
+	for backup, value := range snapCount {
+		countLabels := []string{
+			backup.Hostname,
+			"",
+			"",
+			"",
+			backup.Tags,
+			backup.Paths,
+		}
+
+		if Config.USE_REPO_PATH {
+			countLabels = append(countLabels, os.Getenv("RESTIC_REPOSITORY"))
+		}
+
+		ch <- prometheus.MustNewConstMetric(collector.restic_snapshots_total, prometheus.GaugeValue, float64(value), countLabels...)
+	}
+
 	// Last check's status (Don't run check on every scrape, that would be too much load, just get from the variable, that we set in the ticker)
 	ch <- prometheus.MustNewConstMetric(collector.restic_check_success, prometheus.GaugeValue, float64(checkResult))
 
@@ -142,9 +165,6 @@ func (collector *Collector) Collect(ch chan<- prometheus.Metric) {
 	if locks, err := getLocks(); err == nil {
 		ch <- prometheus.MustNewConstMetric(collector.restic_locks_total, prometheus.GaugeValue, float64(locks))
 	}
-
-	// Get total amount of snapshots in the repo
-	ch <- prometheus.MustNewConstMetric(collector.restic_snapshots_total, prometheus.GaugeValue, float64(snapshot_count))
 
 	// Get how long our metric retrieval took
 	duration := time.Since(startTime)

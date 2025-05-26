@@ -5,11 +5,11 @@
 ![Downloads][github-downloads]
 ![Contributors][github-contribs]
 
-> Exports statistics about a Restic Repository as prometheus metrics  
-> Metrics are refreshed on each scrape, checks will (optionally) be run in a configured interval  
+> Exports statistics about a Restic Repository as prometheus metrics
+> Metrics are refreshed on each scrape, checks will (optionally) be run in a configured interval
 
-This project was inspired by: https://github.com/ngosang/restic-exporter (so props to @ngosang)  
-The metrics are not 1:1 replaceable, but i did my best to keep compatibility high.  
+This project was inspired by: https://github.com/ngosang/restic-exporter (so props to @ngosang)
+The metrics are not 1:1 replaceable, but i did my best to keep compatibility high.
 
 ## Installation
 
@@ -18,7 +18,7 @@ The metrics are not 1:1 replaceable, but i did my best to keep compatibility hig
 > - Systemd Unit
 > - Container
 
-You can either download a prebuilt binary from the releases tab (provided for Windows and Linux), or build your own using the following steps.  
+You can either download a prebuilt binary from the releases tab (provided for Windows and Linux), or build your own using the following steps.
 > For Linux a optional, automated setup script is provided, which:
 > - builds (or downloads, if go is not installed) the binary
 > - optionally installs a systemd-service
@@ -28,7 +28,7 @@ Alternatively you can just run the provided docker container
 ### Docker:
 
 ```sh
-docker run -d \ 
+docker run -d \
 -e RESTIC_REPOSITORY='/etc/restic-repo' \
 -e RESTIC_PASSWORD_FILE='/etc/restic-pw' \
 --mount type=bind,src=/foo/bar/,dst=/etc/restic-repo \
@@ -65,10 +65,10 @@ USE_REPO_PATH  Add the path to the repository as an additional tag (Default: fal
 USE_LATEST_N   Collect the latest n snapshots (grouped by host and path) the repo (Default: 1)
 ```
 
-All other options will be passed through as is, so you can natively use any options that restic provides as environment variables. 
+All other options will be passed through as is, so you can natively use any options that restic provides as environment variables.
 
 The following stats are currently supported:
-```sh 
+```sh
 - Per Snapshot:
   - Start time
   - Duration
@@ -80,11 +80,11 @@ The following stats are currently supported:
   - No. of locks
   - Status of last check (Configurable interval)
   - Total No. of snapshots
-``` 
+```
 
 ## Setup on Linux
 
-> I recommend running the exporter as a systemd-unit or a docker container.  
+> I recommend running the exporter as a systemd-unit or a docker container.
 > You can find a minimal configuration for either method below.
 
 Example for a minimal systemd unit-file:
@@ -141,15 +141,15 @@ restic_locks_total 0
 restic_scrape_duration_seconds 1.043720226
 # HELP restic_snapshots_total Shows the total amount of snapshots in the repository
 # TYPE restic_snapshots_total gauge
-restic_snapshots_total 2
+restic_snapshots_total{client_hostname="fedora",client_username="",client_version="",snapshot_id=",snapshot_paths="/run/host/var/mnt/data/distrobox/restic-exporter/home",snapshot_tags=""} 2
 ```
 
 You can now scrape the metrics endpoint using prometheus.
 
 ## Setup on Windows
 
-> As running as a service under windows is not natively supported, either use 
-> - docker 
+> As running as a service under windows is not natively supported, either use
+> - docker
 > - or [nssm](https://nssm.cc/)
 
 ## Local Development setup

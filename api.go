@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -40,6 +41,12 @@ type Snapshot struct {
 	ShortID string `json:"short_id"`
 }
 
+type UniqueBackup struct {
+	Hostname string `json:"hostname"`
+	Paths    string `json:"paths"`
+	Tags     string `json:"tags"`
+}
+
 func checkIfRepoExists() {
 	_, err := execCMD([]string{"cat", "config"})
 	if err != nil {
@@ -47,7 +54,7 @@ func checkIfRepoExists() {
 	}
 }
 
-// Get Snapshots in the repo
+// Returns filtered Snapshots in the repo
 func getSnapshots() ([]Snapshot, error) {
 	rawJson, err := execCMD([]string{"snapshots", "--latest", strconv.Itoa(Config.USE_LATEST_N)})
 	if err != nil {
@@ -63,20 +70,20 @@ func getSnapshots() ([]Snapshot, error) {
 	return snapshots, err
 }
 
-// More stats can probably be gotten from this
-func getSnapshotCount() (int, error) {
+// Returns all Snapshots in the repo
+func getAllSnapshots() ([]Snapshot, error) {
 	rawJson, err := execCMD([]string{"snapshots"})
 	if err != nil {
-		return 0, err
+		return nil, err
 	}
 
 	var snapshots []Snapshot
 	err = json.Unmarshal(rawJson, &snapshots)
 	if err != nil {
-		return len(snapshots), err
+		return snapshots, err
 	}
 
-	return len(snapshots), err
+	return snapshots, err
 }
 
 // Run check, and return the exit code
@@ -117,4 +124,18 @@ func execCMD(cmdString []string) ([]byte, error) {
 	}
 
 	return output, err
+}
+
+func countSnapshots(snapshots []Snapshot) (map[UniqueBackup]int, error) {
+	var snapCount = make(map[UniqueBackup]int)
+	for _, snapshot := range snapshots {
+		tmpBackup := UniqueBackup{
+			Hostname: snapshot.Hostname,
+			Tags:     strings.Join(snapshot.Tags, ","),
+			Paths:    strings.Join(snapshot.Paths, ","),
+		}
+		snapCount[tmpBackup] += 1
+	}
+
+	return snapCount, nil
 }
