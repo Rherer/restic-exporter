@@ -23,10 +23,10 @@ jobs:
         run: go mod download
 
       - name: Build linux-x64 elf
-        run: GOOS=linux GOARCH=amd64 go build -o ./release/restic-exporter_x64_linux
+        run: CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o ./release/restic-exporter_x64_linux
 
       - name: Build win-x64 exe
-        run: GOOS=windows GOARCH=amd64 go build -o ./release/restic-exporter_x64_win.exe
+        run: CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -o ./release/restic-exporter_x64_win.exe
 
       - name: Upload release
         uses: svenstaro/upload-release-action@v2
