@@ -57,12 +57,13 @@ sh install.sh
 Configuration options (Using Environment Variables):
 
 ```sh
-HTTP_BASE_PATH The path that the metrics will be served on (Default: /metrics)
-HTTP_BASE_PORT The port on which the server will listen (Default: 8080)
-CHECK_INTERVAL The interval between checks (Default: 30m)
-NO_CHECK       Disable periodic checks completely (also disables the corresponding metric) (Default: false)
-USE_REPO_PATH  Add the path to the repository as an additional tag (Default: false)
-USE_LATEST_N   Collect the latest n snapshots (grouped by host and path) the repo (Default: 1)
+HTTP_BASE_PATH  The path that the metrics will be served on (Default: /metrics)
+HTTP_BASE_PORT  The port on which the server will listen (Default: 8080)
+CHECK_INTERVAL  The interval between checks (Default: 30m)
+NO_CHECK        Disable periodic checks completely (also disables the corresponding metric) (Default: false)
+USE_REPO_PATH   Add the path to the repository as an additional tag (Default: false)
+USE_SNAPSHOT_ID Add the individual snapshot id as an additional tag (Default: false)
+USE_LATEST_N    Collect the latest n snapshots (grouped by host and path) the repo (Default: 1)
 ```
 
 All other options will be passed through as is, so you can natively use any options that restic provides as environment variables.
@@ -108,29 +109,29 @@ You can then access the metrics in your browser at ex.: http://localhost:8080/me
 ```
 # HELP restic_backup_files_changed Shows the amount of changed files in the snapshot
 # TYPE restic_backup_files_changed gauge
-restic_backup_files_changed{client_hostname="fedora",client_username="Rherer",client_version="restic 0.17.3",snapshot_id="4544e9a1740a21a800c69603b959c2189545ffae254db2557ef6b26b6835c8cb",snapshot_paths="/run/host/var/mnt/data/distrobox/restic-exporter/home",snapshot_tags=""} 883
-restic_backup_files_changed{client_hostname="fedora",client_username="Rherer",client_version="restic 0.17.3",snapshot_id="d0b273a4bd2fab20558b9a0e1fa8aece2645d8e33bdb9fb7fd5fe7df3de123cd",snapshot_paths="/run/host/var/mnt/data/distrobox/restic-exporter/home",snapshot_tags=""} 0
+restic_backup_files_changed{client_hostname="fedora.fritz.box",client_username="eherer",client_version="restic 0.17.3",snapshot_paths="/mnt/data/distrobox/restic-exporter/home",snapshot_tags="c"} 590
+restic_backup_files_changed{client_hostname="fedora.fritz.box",client_username="eherer",client_version="restic 0.17.3",snapshot_paths="/run/host/var/mnt/data/distrobox/restic-exporter/home",snapshot_tags=""} 883
 # HELP restic_backup_files_new Shows the amount of new files in the snapshot
 # TYPE restic_backup_files_new gauge
-restic_backup_files_new{client_hostname="fedora",client_username="Rherer",client_version="restic 0.17.3",snapshot_id="4544e9a1740a21a800c69603b959c2189545ffae254db2557ef6b26b6835c8cb",snapshot_paths="/run/host/var/mnt/data/distrobox/restic-exporter/home",snapshot_tags=""} 38588
-restic_backup_files_new{client_hostname="fedora",client_username="Rherer",client_version="restic 0.17.3",snapshot_id="d0b273a4bd2fab20558b9a0e1fa8aece2645d8e33bdb9fb7fd5fe7df3de123cd",snapshot_paths="/run/host/var/mnt/data/distrobox/restic-exporter/home",snapshot_tags=""} 24359
+restic_backup_files_new{client_hostname="fedora.fritz.box",client_username="eherer",client_version="restic 0.17.3",snapshot_paths="/mnt/data/distrobox/restic-exporter/home",snapshot_tags="c"} 2372
+restic_backup_files_new{client_hostname="fedora.fritz.box",client_username="eherer",client_version="restic 0.17.3",snapshot_paths="/run/host/var/mnt/data/distrobox/restic-exporter/home",snapshot_tags=""} 38588
 # HELP restic_backup_files_total Shows the total amount of files in the snapshot
 # TYPE restic_backup_files_total gauge
-restic_backup_files_total{client_hostname="fedora",client_username="Rherer",client_version="restic 0.17.3",snapshot_id="4544e9a1740a21a800c69603b959c2189545ffae254db2557ef6b26b6835c8cb",snapshot_paths="/run/host/var/mnt/data/distrobox/restic-exporter/home",snapshot_tags=""} 62937
-restic_backup_files_total{client_hostname="fedora",client_username="Rherer",client_version="restic 0.17.3",snapshot_id="d0b273a4bd2fab20558b9a0e1fa8aece2645d8e33bdb9fb7fd5fe7df3de123cd",snapshot_paths="/run/host/var/mnt/data/distrobox/restic-exporter/home",snapshot_tags=""} 24359
+restic_backup_files_total{client_hostname="fedora.fritz.box",client_username="eherer",client_version="restic 0.17.3",snapshot_paths="/mnt/data/distrobox/restic-exporter/home",snapshot_tags="c"} 33963
+restic_backup_files_total{client_hostname="fedora.fritz.box",client_username="eherer",client_version="restic 0.17.3",snapshot_paths="/run/host/var/mnt/data/distrobox/restic-exporter/home",snapshot_tags=""} 62937
 # HELP restic_backup_runtime Shows the time the snapshot took
 # TYPE restic_backup_runtime gauge
-restic_backup_runtime{client_hostname="fedora",client_username="Rherer",client_version="restic 0.17.3",snapshot_id="4544e9a1740a21a800c69603b959c2189545ffae254db2557ef6b26b6835c8cb",snapshot_paths="/run/host/var/mnt/data/distrobox/restic-exporter/home",snapshot_tags=""} 115
-restic_backup_runtime{client_hostname="fedora",client_username="Rherer",client_version="restic 0.17.3",snapshot_id="d0b273a4bd2fab20558b9a0e1fa8aece2645d8e33bdb9fb7fd5fe7df3de123cd",snapshot_paths="/run/host/var/mnt/data/distrobox/restic-exporter/home",snapshot_tags=""} 105
+restic_backup_runtime{client_hostname="fedora.fritz.box",client_username="eherer",client_version="restic 0.17.3",snapshot_paths="/mnt/data/distrobox/restic-exporter/home",snapshot_tags="c"} 171
+restic_backup_runtime{client_hostname="fedora.fritz.box",client_username="eherer",client_version="restic 0.17.3",snapshot_paths="/run/host/var/mnt/data/distrobox/restic-exporter/home",snapshot_tags=""} 115
 # HELP restic_backup_size_total Shows the amount of bytes in the snapshot
 # TYPE restic_backup_size_total gauge
-restic_backup_size_total{client_hostname="fedora",client_username="Rherer",client_version="restic 0.17.3",snapshot_id="4544e9a1740a21a800c69603b959c2189545ffae254db2557ef6b26b6835c8cb",snapshot_paths="/run/host/var/mnt/data/distrobox/restic-exporter/home",snapshot_tags=""} 4.0023511166e+10
-restic_backup_size_total{client_hostname="fedora",client_username="Rherer",client_version="restic 0.17.3",snapshot_id="d0b273a4bd2fab20558b9a0e1fa8aece2645d8e33bdb9fb7fd5fe7df3de123cd",snapshot_paths="/run/host/var/mnt/data/distrobox/restic-exporter/home",snapshot_tags=""} 1.9628940161e+10
+restic_backup_size_total{client_hostname="fedora.fritz.box",client_username="eherer",client_version="restic 0.17.3",snapshot_paths="/mnt/data/distrobox/restic-exporter/home",snapshot_tags="c"} 1.02404161055e+11
+restic_backup_size_total{client_hostname="fedora.fritz.box",client_username="eherer",client_version="restic 0.17.3",snapshot_paths="/run/host/var/mnt/data/distrobox/restic-exporter/home",snapshot_tags=""} 4.0023511166e+10
 # HELP restic_backup_timestamp Shows the start time of the snapshot
 # TYPE restic_backup_timestamp gauge
-restic_backup_timestamp{client_hostname="fedora",client_username="Rherer",client_version="restic 0.17.3",snapshot_id="4544e9a1740a21a800c69603b959c2189545ffae254db2557ef6b26b6835c8cb",snapshot_paths="/run/host/var/mnt/data/distrobox/restic-exporter/home",snapshot_tags=""} 1.744825025e+09
-restic_backup_timestamp{client_hostname="fedora",client_username="Rherer",client_version="restic 0.17.3",snapshot_id="d0b273a4bd2fab20558b9a0e1fa8aece2645d8e33bdb9fb7fd5fe7df3de123cd",snapshot_paths="/run/host/var/mnt/data/distrobox/restic-exporter/home",snapshot_tags=""} 1.744735999e+09
-# HELP restic_check_success Shows whether a check was sucessfull
+restic_backup_timestamp{client_hostname="fedora.fritz.box",client_username="eherer",client_version="restic 0.17.3",snapshot_paths="/mnt/data/distrobox/restic-exporter/home",snapshot_tags="c"} 1.747670774e+09
+restic_backup_timestamp{client_hostname="fedora.fritz.box",client_username="eherer",client_version="restic 0.17.3",snapshot_paths="/run/host/var/mnt/data/distrobox/restic-exporter/home",snapshot_tags=""} 1.744825025e+09
+# HELP restic_check_success Shows whether a check was successful
 # TYPE restic_check_success gauge
 restic_check_success 0
 # HELP restic_locks_total Shows the amount of locks on the repository
@@ -138,10 +139,12 @@ restic_check_success 0
 restic_locks_total 0
 # HELP restic_scrape_duration_seconds Shows the duration of the scrape
 # TYPE restic_scrape_duration_seconds gauge
-restic_scrape_duration_seconds 1.043720226
+restic_scrape_duration_seconds 1.605832159
 # HELP restic_snapshots_total Shows the total amount of snapshots in the repository
 # TYPE restic_snapshots_total gauge
-restic_snapshots_total{client_hostname="fedora",client_username="",client_version="",snapshot_id=",snapshot_paths="/run/host/var/mnt/data/distrobox/restic-exporter/home",snapshot_tags=""} 2
+restic_snapshots_total{client_hostname="fedora.fritz.box",snapshot_paths="/mnt/data/distrobox/restic-exporter/home",snapshot_tags="a,b"} 1
+restic_snapshots_total{client_hostname="fedora.fritz.box",snapshot_paths="/mnt/data/distrobox/restic-exporter/home",snapshot_tags="c"} 1
+restic_snapshots_total{client_hostname="fedora.fritz.box",snapshot_paths="/run/host/var/mnt/data/distrobox/restic-exporter/home",snapshot_tags=""} 2
 ```
 
 You can now scrape the metrics endpoint using prometheus.

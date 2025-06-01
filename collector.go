@@ -25,7 +25,12 @@ var labels = []string{
 	"client_hostname",
 	"client_username",
 	"client_version",
-	"snapshot_id",
+	"snapshot_tags",
+	"snapshot_paths",
+}
+
+var countLabels = []string{
+	"client_hostname",
 	"snapshot_tags",
 	"snapshot_paths",
 }
@@ -36,6 +41,11 @@ func newCollector() *Collector {
 	// Add repo_path to labels, if specified in config
 	if Config.USE_REPO_PATH {
 		labels = append(labels, "repo_path")
+	}
+
+	// Add snapshot_id to labels, if specified in config
+	if Config.USE_SNAPSHOT_ID {
+		labels = append(labels, "snapshot_id")
 	}
 
 	return &Collector{
@@ -49,7 +59,7 @@ func newCollector() *Collector {
 		),
 		restic_snapshots_total: prometheus.NewDesc("restic_snapshots_total",
 			"Shows the total amount of snapshots in the repository",
-			labels, nil,
+			countLabels, nil,
 		),
 		restic_scrape_duration_seconds: prometheus.NewDesc("restic_scrape_duration_seconds",
 			"Shows the duration of the scrape",
@@ -123,13 +133,16 @@ func (collector *Collector) Collect(ch chan<- prometheus.Metric) {
 			snapshot.Hostname,
 			snapshot.Username,
 			snapshot.ProgramVersion,
-			snapshot.ID,
 			strings.Join(snapshot.Tags, ","),
 			strings.Join(snapshot.Paths, ","),
 		}
 
 		if Config.USE_REPO_PATH {
 			labelValues = append(labelValues, os.Getenv("RESTIC_REPOSITORY"))
+		}
+
+		if Config.USE_SNAPSHOT_ID {
+			labelValues = append(labelValues, snapshot.ID)
 		}
 
 		ch <- prometheus.MustNewConstMetric(collector.restic_backup_timestamp, prometheus.GaugeValue, float64(snapshot.Summary.BackupStart.Unix()), labelValues...)
@@ -142,20 +155,17 @@ func (collector *Collector) Collect(ch chan<- prometheus.Metric) {
 
 	// Get total amount of snapshots in the repo
 	for backup, value := range snapCount {
-		countLabels := []string{
+		countLabelValues := []string{
 			backup.Hostname,
-			"",
-			"",
-			"",
 			backup.Tags,
 			backup.Paths,
 		}
 
 		if Config.USE_REPO_PATH {
-			countLabels = append(countLabels, os.Getenv("RESTIC_REPOSITORY"))
+			countLabels = append(countLabelValues, os.Getenv("RESTIC_REPOSITORY"))
 		}
 
-		ch <- prometheus.MustNewConstMetric(collector.restic_snapshots_total, prometheus.GaugeValue, float64(value), countLabels...)
+		ch <- prometheus.MustNewConstMetric(collector.restic_snapshots_total, prometheus.GaugeValue, float64(value), countLabelValues...)
 	}
 
 	// Last check's status (Don't run check on every scrape, that would be too much load, just get from the variable, that we set in the ticker)

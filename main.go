@@ -13,12 +13,13 @@ import (
 
 // Struct for additional Settings, RESTIC Environment variables get passed to restic directly
 type Settings struct {
-	HTTP_BASE_PATH string        `env:"HTTP_BASE_PATH" envDefault:"/metrics"`
-	HTTP_BASE_PORT int           `env:"HTTP_BASE_PORT" envDefault:"8080"`
-	CHECK_INTERVAL time.Duration `env:"CHECK_INTERVAL" envDefault:"30m"`
-	NO_CHECK       bool          `env:"NO_CHECK" envDefault:"false"`
-	USE_REPO_PATH  bool          `env:"USE_REPO_PATH" envDefault:"false"`
-	USE_LATEST_N   int           `env:"USE_LATEST_N" envDefault:"1"`
+	HTTP_BASE_PATH  string        `env:"HTTP_BASE_PATH" envDefault:"/metrics"`
+	HTTP_BASE_PORT  int           `env:"HTTP_BASE_PORT" envDefault:"8080"`
+	CHECK_INTERVAL  time.Duration `env:"CHECK_INTERVAL" envDefault:"30m"`
+	NO_CHECK        bool          `env:"NO_CHECK" envDefault:"false"`
+	USE_REPO_PATH   bool          `env:"USE_REPO_PATH" envDefault:"false"`
+	USE_SNAPSHOT_ID bool          `env:"USE_SNAPSHOT_ID" envDefault:"false"`
+	USE_LATEST_N    int           `env:"USE_LATEST_N" envDefault:"1"`
 }
 
 var Config Settings = Settings{}
