@@ -28,6 +28,15 @@ jobs:
       - name: Build win-x64 exe
         run: CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -o ./release/restic-exporter_x64_win.exe
 
+      - name: Build rpm
+        id: rpm
+        uses: naveenrajm7/rpmbuild@master
+        with:
+          spec_file: "restic-exporter.spec"
+
+      - name: Move rpm
+        run: mv ${{ steps.rpm_build.outputs.source_rpm_path }}/${{ steps.rpm_build.outputs.source_rpm_name }} ./release/restic_exporter.rpm
+
       - name: Upload release
         uses: svenstaro/upload-release-action@v2
         with:
