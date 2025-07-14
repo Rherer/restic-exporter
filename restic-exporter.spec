@@ -1,11 +1,10 @@
 Name:           restic-exporter
-Version:        0.1.5
-Release:        1%{?dist}
 Summary:        Exports Prometheus metrics for a restic repository
-
+Version:        %{version}
+Release:        1%{?dist}
 License:        GPLv2
 URL:            https://github.com/Rherer/restic-exporter
-Source0:        https://github.com/Rherer/restic-exporter/archive/v%version.tar.gz       
+Source0:        https://github.com/Rherer/restic-exporter/archive/refs/tags/%version.tar.gz       
 
 BuildRequires: golang
 BuildRequires: systemd-rpm-macros  
