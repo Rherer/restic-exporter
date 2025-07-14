@@ -30,14 +30,14 @@ jobs:
 
       - name: Install rpm build tools
         run: |
-          add-apt-repository universe
-          apt-get -y install rpm
+          sudo add-apt-repository universe
+          sudo apt-get -y install rpm
 
       - name: Build RPM
-        run: rpmbuild --nodebuginfo --undefine=_disable_source_fetch --define="version v0.1.5" -bb restic-exporter.spec
+        run: sudo rpmbuild --nodebuginfo --undefine=_disable_source_fetch --define="version ${{ github.ref_name }}" -bb restic-exporter.spec
 
       - name: Move rpm
-        run: mv /github/home/rpmbuild/RPMS/*.rpm ./release/
+        run: sudo mv /github/home/rpmbuild/RPMS/*.rpm ./release/
 
       - name: Upload release
         uses: svenstaro/upload-release-action@v2
